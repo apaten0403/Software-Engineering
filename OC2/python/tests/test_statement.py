@@ -76,7 +76,7 @@ def test_historical_case():
     
 def test_historical_case_with_volume_credit_rounded_down():
     invoice = {
-        "customer": "Target",
+        "customer": "Verison",
         "performances": [
             {"playID": "henry-V", "audience": 14}
         ]
