@@ -23,3 +23,35 @@ def test_statement_with_new_play_types():
     with pytest.raises(ValueError) as exception_info:
         statement(invoice, plays)
     assert "unknown type" in str(exception_info.value)
+
+def test_statement_with_small_audience():
+    invoice = {
+        "customer": "Amazon",
+        "performances": [
+            {"playID": "othello", "audience": 13}
+        ]
+    }
+
+    with open(get_adjacent_file("plays.json")) as f:
+        plays = json.loads(f.read())
+
+    result = statement(invoice, plays)
+
+    assert "Othello" in result
+    assert "$400.00" in result
+    assert "You earned 0 credits" in result
+    
+def test_tragedy_at_30_audience_member_boundary():
+    invoice = {
+        "customer": "Microsoft",
+        "performances": [
+            {"playID": "hamlet", "audience": 30}
+        ]
+    }
+
+    with open(get_adjacent_file("plays.json")) as f:
+        plays = json.loads(f.read())
+            
+    result = statement(invoice, plays)
+
+    assert "$400.00" in result
