@@ -4,7 +4,7 @@ def statement(invoice, plays):
     total_amount = 0
     volume_credits = 0
     result = f'Statement for {invoice["customer"]}\n'
-
+    
     def format_as_dollars(amount):
         return f"${amount:0,.2f}"
     
@@ -25,23 +25,32 @@ def statement(invoice, plays):
                 result += 10000 + 500 * (a_performance["audience"] - 20)
 
             result += 300 * a_performance["audience"]
+            
+        elif play_for(a_performance)["type"] == "historical":
+            result = 50000
+            
+            if a_performance["audience"] > 20:
+                result += 1500 * (a_performance["audience"] - 20)
+            
 
         else:
             raise ValueError(f'unknown type: {play_for(a_performance)["type"]}')
 
         return result
     
-    def volumeCreditsFor(aPerformance):
-        result = max(aPerformance['audience'] - 30, 0)
+    def volume_credits_for(a_performance):
+        if play_for(a_performance)["type"] == "historical":
+            return math.floor(a_performance["audience"] / 5)
 
-        if play_for(aPerformance)["type"] == "comedy":
-            result += math.floor(aPerformance['audience'] / 5)
+        result = max(a_performance["audience"] - 30, 0)
+
+        if play_for(a_performance)["type"] == "comedy":
+            result += math.floor(a_performance["audience"] / 5)
 
         return result
 
-
     for perf in invoice['performances']:
-        volume_credits += volumeCreditsFor(perf)
+        volume_credits += volume_credits_for(perf)
 
         # print line for this order
         result += f' {play_for(perf)["name"]}: {format_as_dollars(amount_for(perf)/100)} ({perf["audience"]} seats)\n'

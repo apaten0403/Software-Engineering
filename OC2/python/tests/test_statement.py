@@ -55,3 +55,38 @@ def test_tragedy_at_30_audience_member_boundary():
     result = statement(invoice, plays)
 
     assert "$400.00" in result
+    
+def test_historical_case():
+    invoice = {
+        "customer": "Target",
+        "performances": [
+            {"playID": "henry-V", "audience": 35}
+        ]
+    }
+    
+    with open(get_adjacent_file("plays.json")) as f:
+        plays = json.loads(f.read())
+            
+    result = statement(invoice, plays)
+
+    assert "$725.00" in result
+    assert "You earned 7 credits" in result
+    assert "Henry V" in result
+    
+    
+def test_historical_case_with_volume_credit_rounded_down():
+    invoice = {
+        "customer": "Target",
+        "performances": [
+            {"playID": "henry-V", "audience": 14}
+        ]
+    }
+    
+    with open(get_adjacent_file("plays.json")) as f:
+        plays = json.loads(f.read())
+            
+    result = statement(invoice, plays)
+
+    assert "$500.00" in result
+    assert "You earned 2 credits" in result
+    assert "Henry V" in result
