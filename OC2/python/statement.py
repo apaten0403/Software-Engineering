@@ -21,6 +21,9 @@ def amount_for(a_performance, play):
 
     return result
 
+def play_for(a_performance, plays):
+    return plays[a_performance["playID"]]
+
 
 def statement(invoice, plays):
     total_amount = 0
@@ -31,7 +34,7 @@ def statement(invoice, plays):
         return f"${amount:0,.2f}"
 
     for perf in invoice['performances']:
-        play = plays[perf['playID']]
+        play = play_for(perf, plays)
         this_amount = amount_for(perf, play)
         
         # add volume credits
