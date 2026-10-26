@@ -34,16 +34,15 @@ def statement(invoice, plays):
         return f"${amount:0,.2f}"
 
     for perf in invoice['performances']:
-        play = play_for(perf, plays)
-        this_amount = amount_for(perf, play)
+        this_amount = amount_for(perf, play_for(perf, plays))
         
         # add volume credits
         volume_credits += max(perf['audience'] - 30, 0)
         # add extra credit for every ten comedy attendees
-        if "comedy" == play["type"]:
+        if play_for(perf, plays)["type"] == "comedy":
             volume_credits += math.floor(perf['audience'] / 5)
         # print line for this order
-        result += f' {play["name"]}: {format_as_dollars(this_amount/100)} ({perf["audience"]} seats)\n'
+        result += f' {play_for(perf, plays)["name"]}: {format_as_dollars(this_amount/100)} ({perf["audience"]} seats)\n'
         total_amount += this_amount
 
     result += f'Amount owed is {format_as_dollars(total_amount/100)}\n'
